@@ -1,0 +1,29 @@
+// js/load-products.js
+
+// Load products dynamically based on category (men, women, kids)
+document.addEventListener('DOMContentLoaded', () => {
+  const productContainer = document.getElementById('product-list');
+  const page = window.location.pathname.split('/').pop();
+  let category = '';
+
+  if (page.includes('men')) category = 'men';
+  else if (page.includes('women')) category = 'women';
+  else if (page.includes('kids')) category = 'kids';
+
+  fetch('data/products.json')
+    .then(response => response.json())
+    .then(data => {
+      const filtered = data.filter(p => p.category === category);
+      filtered.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>₹${product.price}</p>
+        `;
+        productContainer.appendChild(card);
+      });
+    })
+    .catch(error => console.error('Error loading products:', error));
+});
